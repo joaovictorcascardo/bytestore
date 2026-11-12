@@ -116,6 +116,9 @@ public class Loja {
         }
         return historico;
     }
+    public void cancelarPedido(int idPedido, String motivo) {
+        buscarPedido(idPedido).cancelar(motivo);
+    }
     public LinkedList<Produto> getProdutos() {
         return produtos;
     }

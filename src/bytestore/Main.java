@@ -41,6 +41,7 @@ public class Main {
         System.out.println("14 - Confirmar pedido");
         System.out.println("15 - Pagar pedido");
         System.out.println("16 - Histórico do cliente");
+        System.out.println("17 - Cancelar pedido");
         System.out.println("0 - Sair");
     }
 
@@ -62,6 +63,7 @@ public class Main {
             case 14 -> confirmarPedido();
             case 15 -> pagarPedido();
             case 16 -> historicoDoCliente();
+            case 17 -> cancelarPedido();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -177,12 +179,23 @@ public class Main {
             exibirPedido(pedido);
         }
     }
+    private static void cancelarPedido() {
+        int idPedido = lerInteiro("Número do pedido: ");
+        String motivo = lerTexto("Motivo: ");
+        loja.cancelarPedido(idPedido, motivo);
+        System.out.println("Pedido cancelado.");
+        exibirPedido(loja.buscarPedido(idPedido));
+    }
     private static void exibirPedido(Pedido pedido) {
         System.out.println("Pedido " + pedido.getId() + " | cliente: " + pedido.getCliente().getNome()
                 + " | " + pedido.getStatus());
         System.out.println("Aberto em: " + DataHora.formatar(pedido.getAbertoEm()));
         if (pedido.getConfirmadoEm() != null) {
             System.out.println("Confirmado em: " + DataHora.formatar(pedido.getConfirmadoEm()));
+        }
+        if (pedido.getCanceladoEm() != null) {
+            System.out.println("Cancelado em: " + DataHora.formatar(pedido.getCanceladoEm())
+                    + " | motivo: " + pedido.getMotivoCancelamento());
         }
         if (pedido.getPagamento() != null) {
             System.out.println("Pago em: " + DataHora.formatar(pedido.getPagamento().getPagoEm())

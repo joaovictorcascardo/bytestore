@@ -14,6 +14,8 @@ public class Pedido {
     private final OffsetDateTime abertoEm;
     private OffsetDateTime confirmadoEm;
     private Pagamento pagamento;
+    private OffsetDateTime canceladoEm;
+    private String motivoCancelamento;
 
     public Pedido(Cliente cliente) {
         ultimoId++;
@@ -114,6 +116,34 @@ public class Pedido {
         }
         pagamento = new Pagamento(valor);
         status = StatusPedido.PAGO;
+    }
+
+    public void cancelar(String motivo) {
+        if (status == StatusPedido.PAGO) {
+            throw new IllegalStateException("pedido pago não pode ser cancelado, faça uma devolução.");
+        }
+        if (status == StatusPedido.CANCELADO) {
+            throw new IllegalStateException("o pedido " + id + " já está cancelado.");
+        }
+        if (motivo == null || motivo.isBlank()) {
+            throw new IllegalArgumentException("informe o motivo do cancelamento.");
+        }
+        if (status == StatusPedido.CONFIRMADO) {
+            for (ItemPedido item : itens) {
+                item.getProduto().devolverAoEstoque(item.getQuantidade());
+            }
+        }
+        motivoCancelamento = motivo.trim();
+        canceladoEm = OffsetDateTime.now();
+        status = StatusPedido.CANCELADO;
+    }
+
+    public OffsetDateTime getCanceladoEm() {
+        return canceladoEm;
+    }
+
+    public String getMotivoCancelamento() {
+        return motivoCancelamento;
     }
 
     public Pagamento getPagamento() {

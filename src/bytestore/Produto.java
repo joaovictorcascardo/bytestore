@@ -63,6 +63,9 @@ public class Produto {
         }
         estoque -= quantidade;
     }
+    public void devolverAoEstoque(int quantidade) {
+        estoque += quantidade;
+    }
     public String getSituacao() {
         return estoque > 0 ? "disponível" : "sem estoque";
     }
