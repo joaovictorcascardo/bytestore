@@ -1,5 +1,6 @@
 package bytestore;
 
+import java.time.OffsetDateTime;
 import java.util.LinkedList;
 
 public class Loja {
@@ -137,6 +138,10 @@ public class Loja {
         Troca troca = new Troca(cliente, pedidoOriginal, devolucao, pedidoNovo);
         trocas.add(troca);
         return troca;
+    }
+    public Relatorio gerarRelatorio(OffsetDateTime inicio, OffsetDateTime fim, int codigoCliente) {
+        Cliente cliente = codigoCliente == 0 ? null : localizarCliente(codigoCliente);
+        return new Relatorio(pedidos, devolucoes, inicio, fim, cliente);
     }
     public LinkedList<Produto> getProdutos() {
         return produtos;

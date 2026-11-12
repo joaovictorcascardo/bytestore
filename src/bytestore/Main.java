@@ -1,5 +1,6 @@
 package bytestore;
 
+import java.time.OffsetDateTime;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -45,6 +46,7 @@ public class Main {
         System.out.println("18 - Registrar devolução");
         System.out.println("19 - Trocar produto");
         System.out.println("20 - Ver trocas");
+        System.out.println("21 - Relatório por período");
         System.out.println("0 - Sair");
     }
 
@@ -70,6 +72,7 @@ public class Main {
             case 18 -> registrarDevolucao();
             case 19 -> trocarProduto();
             case 20 -> listarTrocas();
+            case 21 -> relatorioPorPeriodo();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -259,6 +262,23 @@ public class Main {
         for (Troca troca : loja.getTrocas()) {
             System.out.println(troca);
         }
+    }
+    private static void relatorioPorPeriodo() {
+        OffsetDateTime inicio = DataHora.ler(lerTexto("Início (dd/MM/aaaa HH:mm:ss): "));
+        OffsetDateTime fim = DataHora.ler(lerTexto("Fim (dd/MM/aaaa HH:mm:ss): "));
+        int codigoCliente = lerInteiro("Código do cliente (0 para todos): ");
+        Relatorio relatorio = loja.gerarRelatorio(inicio, fim, codigoCliente);
+        System.out.println("Relatório de " + DataHora.formatar(inicio) + " até " + DataHora.formatar(fim));
+        exibirRelatorio(relatorio);
+    }
+
+    private static void exibirRelatorio(Relatorio relatorio) {
+        System.out.println("Pedidos pagos: " + relatorio.getPedidosPagos());
+        System.out.println("Total pago (dinheiro + crédito): " + Dinheiro.formatar(relatorio.getTotalPago()));
+        System.out.println("Dinheiro recebido: " + Dinheiro.formatar(relatorio.getDinheiroRecebido()));
+        System.out.println("Crédito utilizado: " + Dinheiro.formatar(relatorio.getCreditoUtilizado()));
+        System.out.println("Devoluções: " + Dinheiro.formatar(relatorio.getTotalDevolvido()));
+        System.out.println("Resultado comercial: " + Dinheiro.formatar(relatorio.getResultadoComercial()));
     }
     private static void exibirPedido(Pedido pedido) {
         System.out.println("Pedido " + pedido.getId() + " | cliente: " + pedido.getCliente().getNome()
