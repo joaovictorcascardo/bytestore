@@ -97,6 +97,9 @@ public class Loja {
     public void removerItem(int idPedido, int codigoProduto) {
         buscarPedido(idPedido).removerItem(codigoProduto);
     }
+    public void aplicarDesconto(int idPedido, int percentual) {
+        buscarPedido(idPedido).aplicarDesconto(percentual);
+    }
     public LinkedList<Produto> getProdutos() {
         return produtos;
     }

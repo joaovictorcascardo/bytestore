@@ -36,6 +36,7 @@ public class Main {
         System.out.println("10 - Ver pedido");
         System.out.println("11 - Adicionar produto ao pedido");
         System.out.println("12 - Remover produto do pedido");
+        System.out.println("13 - Aplicar desconto");
         System.out.println("0 - Sair");
     }
 
@@ -53,6 +54,7 @@ public class Main {
             case 10 -> verPedido();
             case 11 -> adicionarItem();
             case 12 -> removerItem();
+            case 13 -> aplicarDesconto();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -135,6 +137,12 @@ public class Main {
         loja.removerItem(idPedido, codigo);
         exibirPedido(loja.buscarPedido(idPedido));
     }
+    private static void aplicarDesconto() {
+        int idPedido = lerInteiro("Número do pedido: ");
+        int percentual = lerInteiro("Desconto (0, 10 ou 20): ");
+        loja.aplicarDesconto(idPedido, percentual);
+        exibirPedido(loja.buscarPedido(idPedido));
+    }
     private static void exibirPedido(Pedido pedido) {
         System.out.println("Pedido " + pedido.getId() + " | cliente: " + pedido.getCliente().getNome()
                 + " | " + pedido.getStatus());
@@ -146,7 +154,9 @@ public class Main {
             System.out.printf("  %s | %d x %s | subtotal %s%n", item.getProduto().getNome(), item.getQuantidade(),
                     Dinheiro.formatar(item.getPrecoUnitario()), Dinheiro.formatar(item.getSubtotal()));
         }
-        System.out.println("Total: " + Dinheiro.formatar(pedido.getTotalSemDesconto()));
+        System.out.println("Total sem desconto: " + Dinheiro.formatar(pedido.getTotalSemDesconto()));
+        System.out.println("Desconto: " + pedido.getDesconto() + "% | economia: " + Dinheiro.formatar(pedido.getEconomia()));
+        System.out.println("Total a pagar: " + Dinheiro.formatar(pedido.getTotalAPagar()));
     }
     private static int lerInteiro(String mensagem) {
         System.out.print(mensagem);

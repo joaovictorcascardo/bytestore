@@ -9,6 +9,7 @@ public class Pedido {
     private final int id;
     private final Cliente cliente;
     private final LinkedList<ItemPedido> itens = new LinkedList<>();
+    private int desconto;
     private StatusPedido status;
     private final OffsetDateTime abertoEm;
 
@@ -16,6 +17,7 @@ public class Pedido {
         ultimoId++;
         this.id = ultimoId;
         this.cliente = cliente;
+        this.desconto = 0;
         this.status = StatusPedido.ABERTO;
         this.abertoEm = OffsetDateTime.now();
     }
@@ -56,6 +58,30 @@ public class Pedido {
             total += item.getSubtotal();
         }
         return Dinheiro.arredondar(total);
+    }
+
+    public void aplicarDesconto(int percentual) {
+        verificarAberto();
+        if (percentual != 0 && percentual != 10 && percentual != 20) {
+            throw new IllegalArgumentException("só são aceitos descontos de 0%, 10% ou 20%.");
+        }
+        this.desconto = percentual;
+    }
+
+    public double getTotalAPagar() {
+        double total = 0;
+        for (ItemPedido item : itens) {
+            total += item.getTotalComDesconto(desconto);
+        }
+        return Dinheiro.arredondar(total);
+    }
+
+    public double getEconomia() {
+        return Dinheiro.arredondar(getTotalSemDesconto() - getTotalAPagar());
+    }
+
+    public int getDesconto() {
+        return desconto;
     }
 
     private void verificarAberto() {

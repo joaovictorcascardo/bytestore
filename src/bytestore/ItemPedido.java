@@ -21,6 +21,13 @@ public class ItemPedido {
         this.quantidade += quantidade;
     }
 
+    public double getPrecoComDesconto(int percentual) {
+        return Dinheiro.arredondar(precoUnitario * (100 - percentual) / 100.0);
+    }
+
+    public double getTotalComDesconto(int percentual) {
+        return Dinheiro.arredondar(getPrecoComDesconto(percentual) * quantidade);
+    }
     public Produto getProduto() {
         return produto;
     }
