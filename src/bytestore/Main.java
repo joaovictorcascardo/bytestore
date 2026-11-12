@@ -43,6 +43,8 @@ public class Main {
         System.out.println("16 - Histórico do cliente");
         System.out.println("17 - Cancelar pedido");
         System.out.println("18 - Registrar devolução");
+        System.out.println("19 - Trocar produto");
+        System.out.println("20 - Ver trocas");
         System.out.println("0 - Sair");
     }
 
@@ -66,6 +68,8 @@ public class Main {
             case 16 -> historicoDoCliente();
             case 17 -> cancelarPedido();
             case 18 -> registrarDevolucao();
+            case 19 -> trocarProduto();
+            case 20 -> listarTrocas();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -207,6 +211,54 @@ public class Main {
         Cliente cliente = devolucao.getPedido().getCliente();
         System.out.println("Crédito de " + cliente.getNome() + ": " + Dinheiro.formatar(cliente.getCredito()));
         exibirPedido(devolucao.getPedido());
+    }
+    private static void trocarProduto() {
+        int codigoCliente = lerInteiro("Código do cliente: ");
+        System.out.println("Compras pagas:");
+        for (Pedido pedido : loja.historicoDoCliente(codigoCliente)) {
+            if (pedido.getStatus() == StatusPedido.PAGO) {
+                exibirPedido(pedido);
+            }
+        }
+        int idPedido = lerInteiro("Número do pedido a trocar: ");
+        int codigoDevolvido = lerInteiro("Código do produto devolvido: ");
+        int quantidadeDevolvida = lerInteiro("Quantidade devolvida: ");
+        String motivo = lerTexto("Motivo: ");
+        Troca troca = loja.iniciarTroca(codigoCliente, idPedido, codigoDevolvido, quantidadeDevolvida, motivo);
+        Cliente cliente = troca.getCliente();
+        Pedido pedidoNovo = troca.getPedidoNovo();
+        System.out.println("Devolução aprovada: " + troca.getDevolucao());
+        System.out.println("Crédito disponível: " + Dinheiro.formatar(cliente.getCredito()));
+        System.out.println("Novo pedido " + pedidoNovo.getId() + " aberto para o produto substituto.");
+        try {
+            int codigoNovo = lerInteiro("Código do produto substituto: ");
+            int quantidadeNova = lerInteiro("Quantidade: ");
+            loja.adicionarItem(pedidoNovo.getId(), codigoNovo, quantidadeNova);
+            loja.confirmarPedido(pedidoNovo.getId());
+            double restante = Dinheiro.arredondar(pedidoNovo.getTotalAPagar() - pedidoNovo.calcularCreditoUsado(true));
+            System.out.println("Total da nova compra: " + Dinheiro.formatar(pedidoNovo.getTotalAPagar()));
+            System.out.println("Diferença a pagar em dinheiro: " + Dinheiro.formatar(restante));
+            double dinheiro = lerValor("Valor em dinheiro: ");
+            loja.pagarPedido(pedidoNovo.getId(), true, dinheiro);
+            System.out.println("Troca concluída. Crédito restante de " + cliente.getNome() + ": "
+                    + Dinheiro.formatar(cliente.getCredito()));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println("A nova compra não foi concluída: " + e.getMessage());
+            System.out.println("A devolução " + troca.getDevolucao().getId() + " continua valendo e o crédito de "
+                    + Dinheiro.formatar(cliente.getCredito()) + " segue disponível para " + cliente.getNome() + ".");
+            System.out.println("O pedido " + pedidoNovo.getId() + " ficou " + pedidoNovo.getStatus()
+                    + " e pode ser continuado pelo menu.");
+        }
+        exibirPedido(pedidoNovo);
+    }
+
+    private static void listarTrocas() {
+        if (loja.getTrocas().isEmpty()) {
+            System.out.println("Nenhuma troca registrada.");
+        }
+        for (Troca troca : loja.getTrocas()) {
+            System.out.println(troca);
+        }
     }
     private static void exibirPedido(Pedido pedido) {
         System.out.println("Pedido " + pedido.getId() + " | cliente: " + pedido.getCliente().getNome()

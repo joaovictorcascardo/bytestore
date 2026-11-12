@@ -7,6 +7,7 @@ public class Loja {
     private final LinkedList<Cliente> clientes = new LinkedList<>();
     private final LinkedList<Pedido> pedidos = new LinkedList<>();
     private final LinkedList<Devolucao> devolucoes = new LinkedList<>();
+    private final LinkedList<Troca> trocas = new LinkedList<>();
 
     public void carregarDadosIniciais() {
         produtos.add(new Produto(101, "Teclado USB", 120.00, 5));
@@ -125,6 +126,18 @@ public class Loja {
         devolucoes.add(devolucao);
         return devolucao;
     }
+    public Troca iniciarTroca(int codigoCliente, int idPedidoPago, int codigoProduto, int quantidade, String motivo) {
+        Cliente cliente = localizarCliente(codigoCliente);
+        Pedido pedidoOriginal = buscarPedido(idPedidoPago);
+        if (pedidoOriginal.getCliente() != cliente) {
+            throw new IllegalArgumentException("o pedido " + idPedidoPago + " não é de " + cliente.getNome() + ".");
+        }
+        Devolucao devolucao = registrarDevolucao(idPedidoPago, codigoProduto, quantidade, motivo);
+        Pedido pedidoNovo = abrirPedido(codigoCliente);
+        Troca troca = new Troca(cliente, pedidoOriginal, devolucao, pedidoNovo);
+        trocas.add(troca);
+        return troca;
+    }
     public LinkedList<Produto> getProdutos() {
         return produtos;
     }
@@ -135,5 +148,9 @@ public class Loja {
 
     public LinkedList<Devolucao> getDevolucoes() {
         return devolucoes;
+    }
+
+    public LinkedList<Troca> getTrocas() {
+        return trocas;
     }
 }
