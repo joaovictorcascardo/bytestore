@@ -32,6 +32,8 @@ public class Main {
         System.out.println("6 - Repor estoque");
         System.out.println("7 - Alterar preço");
         System.out.println("8 - Consultar disponibilidade");
+        System.out.println("9 - Abrir pedido");
+        System.out.println("10 - Ver pedido");
         System.out.println("0 - Sair");
     }
 
@@ -45,6 +47,8 @@ public class Main {
             case 6 -> reporEstoque();
             case 7 -> alterarPreco();
             case 8 -> consultarProduto();
+            case 9 -> abrirPedido();
+            case 10 -> verPedido();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -103,6 +107,21 @@ public class Main {
         Produto produto = loja.localizarProduto(lerInteiro("Código do produto: "));
         System.out.printf("%s | %s | %d unidade(s) | %s%n", produto.getNome(),
                 Dinheiro.formatar(produto.getPreco()), produto.getEstoque(), produto.getSituacao());
+    }
+    private static void abrirPedido() {
+        Pedido pedido = loja.abrirPedido(lerInteiro("Código do cliente: "));
+        System.out.println("Pedido " + pedido.getId() + " aberto para " + pedido.getCliente().getNome() + ".");
+        exibirPedido(pedido);
+    }
+
+    private static void verPedido() {
+        exibirPedido(loja.buscarPedido(lerInteiro("Número do pedido: ")));
+    }
+
+    private static void exibirPedido(Pedido pedido) {
+        System.out.println("Pedido " + pedido.getId() + " | cliente: " + pedido.getCliente().getNome()
+                + " | " + pedido.getStatus());
+        System.out.println("Aberto em: " + DataHora.formatar(pedido.getAbertoEm()));
     }
     private static int lerInteiro(String mensagem) {
         System.out.print(mensagem);

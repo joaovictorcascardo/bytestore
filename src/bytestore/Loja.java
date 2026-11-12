@@ -5,6 +5,7 @@ import java.util.LinkedList;
 public class Loja {
     private final LinkedList<Produto> produtos = new LinkedList<>();
     private final LinkedList<Cliente> clientes = new LinkedList<>();
+    private final LinkedList<Pedido> pedidos = new LinkedList<>();
 
     public void carregarDadosIniciais() {
         produtos.add(new Produto(101, "Teclado USB", 120.00, 5));
@@ -69,6 +70,24 @@ public class Loja {
             throw new IllegalArgumentException("cliente " + codigo + " não encontrado.");
         }
         return cliente;
+    }
+    public Pedido abrirPedido(int codigoCliente) {
+        Cliente cliente = localizarCliente(codigoCliente);
+        if (!cliente.isAtivo()) {
+            throw new IllegalStateException("o cliente " + cliente.getNome() + " está inativo.");
+        }
+        Pedido pedido = new Pedido(cliente);
+        pedidos.add(pedido);
+        return pedido;
+    }
+
+    public Pedido buscarPedido(int id) {
+        for (Pedido pedido : pedidos) {
+            if (pedido.getId() == id) {
+                return pedido;
+            }
+        }
+        throw new IllegalArgumentException("pedido " + id + " não encontrado.");
     }
     public LinkedList<Produto> getProdutos() {
         return produtos;
