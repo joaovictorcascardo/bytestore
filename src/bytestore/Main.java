@@ -34,6 +34,7 @@ public class Main {
         System.out.println("8 - Consultar disponibilidade");
         System.out.println("9 - Abrir pedido");
         System.out.println("10 - Ver pedido");
+        System.out.println("11 - Adicionar produto ao pedido");
         System.out.println("0 - Sair");
     }
 
@@ -49,6 +50,7 @@ public class Main {
             case 8 -> consultarProduto();
             case 9 -> abrirPedido();
             case 10 -> verPedido();
+            case 11 -> adicionarItem();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -118,10 +120,25 @@ public class Main {
         exibirPedido(loja.buscarPedido(lerInteiro("Número do pedido: ")));
     }
 
+    private static void adicionarItem() {
+        int idPedido = lerInteiro("Número do pedido: ");
+        int codigo = lerInteiro("Código do produto: ");
+        int quantidade = lerInteiro("Quantidade: ");
+        loja.adicionarItem(idPedido, codigo, quantidade);
+        exibirPedido(loja.buscarPedido(idPedido));
+    }
     private static void exibirPedido(Pedido pedido) {
         System.out.println("Pedido " + pedido.getId() + " | cliente: " + pedido.getCliente().getNome()
                 + " | " + pedido.getStatus());
         System.out.println("Aberto em: " + DataHora.formatar(pedido.getAbertoEm()));
+        if (pedido.getItens().isEmpty()) {
+            System.out.println("  (sem itens)");
+        }
+        for (ItemPedido item : pedido.getItens()) {
+            System.out.printf("  %s | %d x %s | subtotal %s%n", item.getProduto().getNome(), item.getQuantidade(),
+                    Dinheiro.formatar(item.getPrecoUnitario()), Dinheiro.formatar(item.getSubtotal()));
+        }
+        System.out.println("Total: " + Dinheiro.formatar(pedido.getTotalSemDesconto()));
     }
     private static int lerInteiro(String mensagem) {
         System.out.print(mensagem);

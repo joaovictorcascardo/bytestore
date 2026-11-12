@@ -89,6 +89,11 @@ public class Loja {
         }
         throw new IllegalArgumentException("pedido " + id + " não encontrado.");
     }
+    public void adicionarItem(int idPedido, int codigoProduto, int quantidade) {
+        Pedido pedido = buscarPedido(idPedido);
+        Produto produto = localizarProduto(codigoProduto);
+        pedido.adicionarItem(produto, quantidade);
+    }
     public LinkedList<Produto> getProdutos() {
         return produtos;
     }
