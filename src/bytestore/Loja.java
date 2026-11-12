@@ -94,6 +94,9 @@ public class Loja {
         Produto produto = localizarProduto(codigoProduto);
         pedido.adicionarItem(produto, quantidade);
     }
+    public void removerItem(int idPedido, int codigoProduto) {
+        buscarPedido(idPedido).removerItem(codigoProduto);
+    }
     public LinkedList<Produto> getProdutos() {
         return produtos;
     }

@@ -33,6 +33,14 @@ public class Pedido {
         }
     }
 
+    public void removerItem(int codigoProduto) {
+        verificarAberto();
+        ItemPedido item = buscarItem(codigoProduto);
+        if (item == null) {
+            throw new IllegalArgumentException("o produto " + codigoProduto + " não está no pedido " + id + ".");
+        }
+        itens.remove(item);
+    }
     public ItemPedido buscarItem(int codigoProduto) {
         for (ItemPedido item : itens) {
             if (item.getProduto().getCodigo() == codigoProduto) {

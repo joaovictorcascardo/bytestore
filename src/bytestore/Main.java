@@ -35,6 +35,7 @@ public class Main {
         System.out.println("9 - Abrir pedido");
         System.out.println("10 - Ver pedido");
         System.out.println("11 - Adicionar produto ao pedido");
+        System.out.println("12 - Remover produto do pedido");
         System.out.println("0 - Sair");
     }
 
@@ -51,6 +52,7 @@ public class Main {
             case 9 -> abrirPedido();
             case 10 -> verPedido();
             case 11 -> adicionarItem();
+            case 12 -> removerItem();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -125,6 +127,12 @@ public class Main {
         int codigo = lerInteiro("Código do produto: ");
         int quantidade = lerInteiro("Quantidade: ");
         loja.adicionarItem(idPedido, codigo, quantidade);
+        exibirPedido(loja.buscarPedido(idPedido));
+    }
+    private static void removerItem() {
+        int idPedido = lerInteiro("Número do pedido: ");
+        int codigo = lerInteiro("Código do produto a remover: ");
+        loja.removerItem(idPedido, codigo);
         exibirPedido(loja.buscarPedido(idPedido));
     }
     private static void exibirPedido(Pedido pedido) {
