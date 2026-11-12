@@ -1,5 +1,6 @@
 package bytestore;
 
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Main {
@@ -39,6 +40,7 @@ public class Main {
         System.out.println("13 - Aplicar desconto");
         System.out.println("14 - Confirmar pedido");
         System.out.println("15 - Pagar pedido");
+        System.out.println("16 - Histórico do cliente");
         System.out.println("0 - Sair");
     }
 
@@ -59,6 +61,7 @@ public class Main {
             case 13 -> aplicarDesconto();
             case 14 -> confirmarPedido();
             case 15 -> pagarPedido();
+            case 16 -> historicoDoCliente();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -161,6 +164,18 @@ public class Main {
         loja.pagarPedido(idPedido, valor);
         System.out.println("Pagamento registrado.");
         exibirPedido(pedido);
+    }
+    private static void historicoDoCliente() {
+        int codigo = lerInteiro("Código do cliente: ");
+        LinkedList<Pedido> historico = loja.historicoDoCliente(codigo);
+        if (historico.isEmpty()) {
+            System.out.println("Esse cliente ainda não tem pedidos.");
+            return;
+        }
+        for (Pedido pedido : historico) {
+            System.out.println("--------------------------------");
+            exibirPedido(pedido);
+        }
     }
     private static void exibirPedido(Pedido pedido) {
         System.out.println("Pedido " + pedido.getId() + " | cliente: " + pedido.getCliente().getNome()

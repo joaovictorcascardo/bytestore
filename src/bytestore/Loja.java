@@ -106,6 +106,16 @@ public class Loja {
     public void pagarPedido(int idPedido, double valor) {
         buscarPedido(idPedido).pagar(valor);
     }
+    public LinkedList<Pedido> historicoDoCliente(int codigoCliente) {
+        Cliente cliente = localizarCliente(codigoCliente);
+        LinkedList<Pedido> historico = new LinkedList<>();
+        for (Pedido pedido : pedidos) {
+            if (pedido.getCliente() == cliente) {
+                historico.add(pedido);
+            }
+        }
+        return historico;
+    }
     public LinkedList<Produto> getProdutos() {
         return produtos;
     }
