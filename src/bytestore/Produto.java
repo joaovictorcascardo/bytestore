@@ -47,6 +47,12 @@ public class Produto {
         }
         estoque += quantidade;
     }
+    public void alterarPreco(double novoPreco) {
+        if (novoPreco <= 0) {
+            throw new IllegalArgumentException("o novo preço precisa ser maior que zero.");
+        }
+        preco = Dinheiro.arredondar(novoPreco);
+    }
     @Override
     public String toString() {
         return String.format("%d - %s | %s | estoque: %d", codigo, nome, Dinheiro.formatar(preco), estoque);

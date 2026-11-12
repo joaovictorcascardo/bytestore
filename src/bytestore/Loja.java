@@ -42,6 +42,9 @@ public class Loja {
     public void reporEstoque(int codigoProduto, int quantidade) {
         localizarProduto(codigoProduto).reporEstoque(quantidade);
     }
+    public void alterarPreco(int codigoProduto, double novoPreco) {
+        localizarProduto(codigoProduto).alterarPreco(novoPreco);
+    }
     public Cliente cadastrarCliente(int codigo, String nome, String email) {
         if (buscarCliente(codigo) != null) {
             throw new IllegalArgumentException("já existe um cliente com o código " + codigo + ".");
