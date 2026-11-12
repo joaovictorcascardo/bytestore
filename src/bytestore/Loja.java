@@ -103,6 +103,9 @@ public class Loja {
     public void confirmarPedido(int idPedido) {
         buscarPedido(idPedido).confirmar();
     }
+    public void pagarPedido(int idPedido, double valor) {
+        buscarPedido(idPedido).pagar(valor);
+    }
     public LinkedList<Produto> getProdutos() {
         return produtos;
     }

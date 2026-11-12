@@ -38,6 +38,7 @@ public class Main {
         System.out.println("12 - Remover produto do pedido");
         System.out.println("13 - Aplicar desconto");
         System.out.println("14 - Confirmar pedido");
+        System.out.println("15 - Pagar pedido");
         System.out.println("0 - Sair");
     }
 
@@ -57,6 +58,7 @@ public class Main {
             case 12 -> removerItem();
             case 13 -> aplicarDesconto();
             case 14 -> confirmarPedido();
+            case 15 -> pagarPedido();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -151,12 +153,25 @@ public class Main {
         System.out.println("Pedido confirmado e estoque separado.");
         exibirPedido(loja.buscarPedido(idPedido));
     }
+    private static void pagarPedido() {
+        int idPedido = lerInteiro("Número do pedido: ");
+        Pedido pedido = loja.buscarPedido(idPedido);
+        System.out.println("Total a pagar: " + Dinheiro.formatar(pedido.getTotalAPagar()));
+        double valor = lerValor("Valor recebido: ");
+        loja.pagarPedido(idPedido, valor);
+        System.out.println("Pagamento registrado.");
+        exibirPedido(pedido);
+    }
     private static void exibirPedido(Pedido pedido) {
         System.out.println("Pedido " + pedido.getId() + " | cliente: " + pedido.getCliente().getNome()
                 + " | " + pedido.getStatus());
         System.out.println("Aberto em: " + DataHora.formatar(pedido.getAbertoEm()));
         if (pedido.getConfirmadoEm() != null) {
             System.out.println("Confirmado em: " + DataHora.formatar(pedido.getConfirmadoEm()));
+        }
+        if (pedido.getPagamento() != null) {
+            System.out.println("Pago em: " + DataHora.formatar(pedido.getPagamento().getPagoEm())
+                    + " | valor: " + Dinheiro.formatar(pedido.getPagamento().getValor()));
         }
         if (pedido.getItens().isEmpty()) {
             System.out.println("  (sem itens)");

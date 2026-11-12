@@ -13,6 +13,7 @@ public class Pedido {
     private StatusPedido status;
     private final OffsetDateTime abertoEm;
     private OffsetDateTime confirmadoEm;
+    private Pagamento pagamento;
 
     public Pedido(Cliente cliente) {
         ultimoId++;
@@ -102,6 +103,21 @@ public class Pedido {
         }
         confirmadoEm = OffsetDateTime.now();
         status = StatusPedido.CONFIRMADO;
+    }
+
+    public void pagar(double valor) {
+        if (status != StatusPedido.CONFIRMADO) {
+            throw new IllegalStateException("só pedido CONFIRMADO pode ser pago. O pedido " + id + " está " + status + ".");
+        }
+        if (!Dinheiro.iguais(valor, getTotalAPagar())) {
+            throw new IllegalArgumentException("o valor precisa ser exatamente " + Dinheiro.formatar(getTotalAPagar()) + ".");
+        }
+        pagamento = new Pagamento(valor);
+        status = StatusPedido.PAGO;
+    }
+
+    public Pagamento getPagamento() {
+        return pagamento;
     }
 
     public OffsetDateTime getConfirmadoEm() {
