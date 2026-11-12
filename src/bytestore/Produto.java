@@ -41,6 +41,12 @@ public class Produto {
         return estoque;
     }
 
+    public void reporEstoque(int quantidade) {
+        if (quantidade <= 0) {
+            throw new IllegalArgumentException("a quantidade de reposição precisa ser maior que zero.");
+        }
+        estoque += quantidade;
+    }
     @Override
     public String toString() {
         return String.format("%d - %s | %s | estoque: %d", codigo, nome, Dinheiro.formatar(preco), estoque);

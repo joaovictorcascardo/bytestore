@@ -29,6 +29,7 @@ public class Main {
         System.out.println("3 - Listar clientes");
         System.out.println("4 - Cadastrar cliente");
         System.out.println("5 - Buscar cliente");
+        System.out.println("6 - Repor estoque");
         System.out.println("0 - Sair");
     }
 
@@ -39,6 +40,7 @@ public class Main {
             case 3 -> listarClientes();
             case 4 -> cadastrarCliente();
             case 5 -> buscarCliente();
+            case 6 -> reporEstoque();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -78,6 +80,14 @@ public class Main {
     private static void buscarCliente() {
         Cliente cliente = loja.localizarCliente(lerInteiro("Código do cliente: "));
         System.out.println(cliente);
+    }
+    private static void reporEstoque() {
+        int codigo = lerInteiro("Código do produto: ");
+        int quantidade = lerInteiro("Quantidade recebida: ");
+        Produto produto = loja.localizarProduto(codigo);
+        int anterior = produto.getEstoque();
+        loja.reporEstoque(codigo, quantidade);
+        System.out.println("Estoque de " + produto.getNome() + ": " + anterior + " -> " + produto.getEstoque());
     }
     private static int lerInteiro(String mensagem) {
         System.out.print(mensagem);

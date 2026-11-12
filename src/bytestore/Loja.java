@@ -31,6 +31,17 @@ public class Loja {
         return null;
     }
 
+    public Produto localizarProduto(int codigo) {
+        Produto produto = buscarProduto(codigo);
+        if (produto == null) {
+            throw new IllegalArgumentException("produto " + codigo + " não encontrado.");
+        }
+        return produto;
+    }
+
+    public void reporEstoque(int codigoProduto, int quantidade) {
+        localizarProduto(codigoProduto).reporEstoque(quantidade);
+    }
     public Cliente cadastrarCliente(int codigo, String nome, String email) {
         if (buscarCliente(codigo) != null) {
             throw new IllegalArgumentException("já existe um cliente com o código " + codigo + ".");
