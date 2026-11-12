@@ -53,6 +53,9 @@ public class Produto {
         }
         preco = Dinheiro.arredondar(novoPreco);
     }
+    public String getSituacao() {
+        return estoque > 0 ? "disponível" : "sem estoque";
+    }
     @Override
     public String toString() {
         return String.format("%d - %s | %s | estoque: %d", codigo, nome, Dinheiro.formatar(preco), estoque);

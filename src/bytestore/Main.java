@@ -31,6 +31,7 @@ public class Main {
         System.out.println("5 - Buscar cliente");
         System.out.println("6 - Repor estoque");
         System.out.println("7 - Alterar preço");
+        System.out.println("8 - Consultar disponibilidade");
         System.out.println("0 - Sair");
     }
 
@@ -43,6 +44,7 @@ public class Main {
             case 5 -> buscarCliente();
             case 6 -> reporEstoque();
             case 7 -> alterarPreco();
+            case 8 -> consultarProduto();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -96,6 +98,11 @@ public class Main {
         double novoPreco = lerValor("Novo preço: ");
         loja.alterarPreco(codigo, novoPreco);
         System.out.println("Preço atualizado: " + loja.localizarProduto(codigo));
+    }
+    private static void consultarProduto() {
+        Produto produto = loja.localizarProduto(lerInteiro("Código do produto: "));
+        System.out.printf("%s | %s | %d unidade(s) | %s%n", produto.getNome(),
+                Dinheiro.formatar(produto.getPreco()), produto.getEstoque(), produto.getSituacao());
     }
     private static int lerInteiro(String mensagem) {
         System.out.print(mensagem);
