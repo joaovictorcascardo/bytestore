@@ -6,6 +6,7 @@ public class Loja {
     private final LinkedList<Produto> produtos = new LinkedList<>();
     private final LinkedList<Cliente> clientes = new LinkedList<>();
     private final LinkedList<Pedido> pedidos = new LinkedList<>();
+    private final LinkedList<Devolucao> devolucoes = new LinkedList<>();
 
     public void carregarDadosIniciais() {
         produtos.add(new Produto(101, "Teclado USB", 120.00, 5));
@@ -119,11 +120,20 @@ public class Loja {
     public void cancelarPedido(int idPedido, String motivo) {
         buscarPedido(idPedido).cancelar(motivo);
     }
+    public Devolucao registrarDevolucao(int idPedido, int codigoProduto, int quantidade, String motivo) {
+        Devolucao devolucao = buscarPedido(idPedido).devolver(codigoProduto, quantidade, motivo);
+        devolucoes.add(devolucao);
+        return devolucao;
+    }
     public LinkedList<Produto> getProdutos() {
         return produtos;
     }
 
     public LinkedList<Cliente> getClientes() {
         return clientes;
+    }
+
+    public LinkedList<Devolucao> getDevolucoes() {
+        return devolucoes;
     }
 }

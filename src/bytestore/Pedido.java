@@ -138,6 +138,24 @@ public class Pedido {
         status = StatusPedido.CANCELADO;
     }
 
+    public Devolucao devolver(int codigoProduto, int quantidade, String motivo) {
+        if (status != StatusPedido.PAGO) {
+            throw new IllegalStateException("só dá para devolver produtos de pedido PAGO. O pedido " + id + " está " + status + ".");
+        }
+        ItemPedido item = buscarItem(codigoProduto);
+        if (item == null) {
+            throw new IllegalArgumentException("o produto " + codigoProduto + " não faz parte do pedido " + id + ".");
+        }
+        if (motivo == null || motivo.isBlank()) {
+            throw new IllegalArgumentException("informe o motivo da devolução.");
+        }
+        item.registrarDevolucao(quantidade);
+        double valor = Dinheiro.arredondar(item.getPrecoComDesconto(desconto) * quantidade);
+        item.getProduto().devolverAoEstoque(quantidade);
+        cliente.adicionarCredito(valor);
+        return new Devolucao(this, item.getProduto(), quantidade, valor, motivo);
+    }
+
     public OffsetDateTime getCanceladoEm() {
         return canceladoEm;
     }

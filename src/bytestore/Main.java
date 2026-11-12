@@ -42,6 +42,7 @@ public class Main {
         System.out.println("15 - Pagar pedido");
         System.out.println("16 - Histórico do cliente");
         System.out.println("17 - Cancelar pedido");
+        System.out.println("18 - Registrar devolução");
         System.out.println("0 - Sair");
     }
 
@@ -64,6 +65,7 @@ public class Main {
             case 15 -> pagarPedido();
             case 16 -> historicoDoCliente();
             case 17 -> cancelarPedido();
+            case 18 -> registrarDevolucao();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -186,6 +188,17 @@ public class Main {
         System.out.println("Pedido cancelado.");
         exibirPedido(loja.buscarPedido(idPedido));
     }
+    private static void registrarDevolucao() {
+        int idPedido = lerInteiro("Número do pedido pago: ");
+        int codigo = lerInteiro("Código do produto: ");
+        int quantidade = lerInteiro("Quantidade devolvida: ");
+        String motivo = lerTexto("Motivo: ");
+        Devolucao devolucao = loja.registrarDevolucao(idPedido, codigo, quantidade, motivo);
+        System.out.println("Devolução registrada: " + devolucao);
+        Cliente cliente = devolucao.getPedido().getCliente();
+        System.out.println("Crédito de " + cliente.getNome() + ": " + Dinheiro.formatar(cliente.getCredito()));
+        exibirPedido(devolucao.getPedido());
+    }
     private static void exibirPedido(Pedido pedido) {
         System.out.println("Pedido " + pedido.getId() + " | cliente: " + pedido.getCliente().getNome()
                 + " | " + pedido.getStatus());
@@ -207,6 +220,10 @@ public class Main {
         for (ItemPedido item : pedido.getItens()) {
             System.out.printf("  %s | %d x %s | subtotal %s%n", item.getProduto().getNome(), item.getQuantidade(),
                     Dinheiro.formatar(item.getPrecoUnitario()), Dinheiro.formatar(item.getSubtotal()));
+            if (item.getQuantidadeDevolvida() > 0) {
+                System.out.printf("    devolvidas: %d | ainda podem ser devolvidas: %d%n",
+                        item.getQuantidadeDevolvida(), item.getQuantidadeDevolvivel());
+            }
         }
         System.out.println("Total sem desconto: " + Dinheiro.formatar(pedido.getTotalSemDesconto()));
         System.out.println("Desconto: " + pedido.getDesconto() + "% | economia: " + Dinheiro.formatar(pedido.getEconomia()));

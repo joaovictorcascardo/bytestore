@@ -44,6 +44,9 @@ public class Cliente {
         return credito;
     }
 
+    public void adicionarCredito(double valor) {
+        credito = Dinheiro.arredondar(credito + valor);
+    }
     @Override
     public String toString() {
         return String.format("%d - %s (%s) | %s | crédito: %s", codigo, nome, email,
