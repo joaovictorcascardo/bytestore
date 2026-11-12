@@ -53,6 +53,16 @@ public class Produto {
         }
         preco = Dinheiro.arredondar(novoPreco);
     }
+    public boolean temEstoque(int quantidade) {
+        return estoque >= quantidade;
+    }
+
+    public void baixarEstoque(int quantidade) {
+        if (!temEstoque(quantidade)) {
+            throw new IllegalStateException("estoque insuficiente de " + nome + ".");
+        }
+        estoque -= quantidade;
+    }
     public String getSituacao() {
         return estoque > 0 ? "disponível" : "sem estoque";
     }

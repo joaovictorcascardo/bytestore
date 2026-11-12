@@ -100,6 +100,9 @@ public class Loja {
     public void aplicarDesconto(int idPedido, int percentual) {
         buscarPedido(idPedido).aplicarDesconto(percentual);
     }
+    public void confirmarPedido(int idPedido) {
+        buscarPedido(idPedido).confirmar();
+    }
     public LinkedList<Produto> getProdutos() {
         return produtos;
     }

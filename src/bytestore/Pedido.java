@@ -12,6 +12,7 @@ public class Pedido {
     private int desconto;
     private StatusPedido status;
     private final OffsetDateTime abertoEm;
+    private OffsetDateTime confirmadoEm;
 
     public Pedido(Cliente cliente) {
         ultimoId++;
@@ -82,6 +83,29 @@ public class Pedido {
 
     public int getDesconto() {
         return desconto;
+    }
+
+    public void confirmar() {
+        verificarAberto();
+        if (itens.isEmpty()) {
+            throw new IllegalStateException("o pedido " + id + " não tem itens.");
+        }
+        for (ItemPedido item : itens) {
+            Produto produto = item.getProduto();
+            if (!produto.temEstoque(item.getQuantidade())) {
+                throw new IllegalStateException("estoque insuficiente de " + produto.getNome() + ": pedido "
+                        + item.getQuantidade() + ", disponível " + produto.getEstoque() + ".");
+            }
+        }
+        for (ItemPedido item : itens) {
+            item.getProduto().baixarEstoque(item.getQuantidade());
+        }
+        confirmadoEm = OffsetDateTime.now();
+        status = StatusPedido.CONFIRMADO;
+    }
+
+    public OffsetDateTime getConfirmadoEm() {
+        return confirmadoEm;
     }
 
     private void verificarAberto() {
