@@ -4,10 +4,13 @@ import java.util.LinkedList;
 
 public class Loja {
     private final LinkedList<Produto> produtos = new LinkedList<>();
+    private final LinkedList<Cliente> clientes = new LinkedList<>();
 
     public void carregarDadosIniciais() {
         produtos.add(new Produto(101, "Teclado USB", 120.00, 5));
         produtos.add(new Produto(102, "Mouse USB", 80.00, 8));
+        clientes.add(new Cliente(1, "Ana", "ana@exemplo.com"));
+        clientes.add(new Cliente(2, "Bruno", "bruno@exemplo.com"));
     }
 
     public Produto cadastrarProduto(int codigo, String nome, double preco, int estoque) {
@@ -28,7 +31,36 @@ public class Loja {
         return null;
     }
 
+    public Cliente cadastrarCliente(int codigo, String nome, String email) {
+        if (buscarCliente(codigo) != null) {
+            throw new IllegalArgumentException("já existe um cliente com o código " + codigo + ".");
+        }
+        Cliente cliente = new Cliente(codigo, nome, email);
+        clientes.add(cliente);
+        return cliente;
+    }
+
+    public Cliente buscarCliente(int codigo) {
+        for (Cliente cliente : clientes) {
+            if (cliente.getCodigo() == codigo) {
+                return cliente;
+            }
+        }
+        return null;
+    }
+
+    public Cliente localizarCliente(int codigo) {
+        Cliente cliente = buscarCliente(codigo);
+        if (cliente == null) {
+            throw new IllegalArgumentException("cliente " + codigo + " não encontrado.");
+        }
+        return cliente;
+    }
     public LinkedList<Produto> getProdutos() {
         return produtos;
+    }
+
+    public LinkedList<Cliente> getClientes() {
+        return clientes;
     }
 }

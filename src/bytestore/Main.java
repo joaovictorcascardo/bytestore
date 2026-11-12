@@ -26,6 +26,9 @@ public class Main {
         System.out.println("========== ByteStore ==========");
         System.out.println("1 - Listar produtos");
         System.out.println("2 - Cadastrar produto");
+        System.out.println("3 - Listar clientes");
+        System.out.println("4 - Cadastrar cliente");
+        System.out.println("5 - Buscar cliente");
         System.out.println("0 - Sair");
     }
 
@@ -33,6 +36,9 @@ public class Main {
         switch (opcao) {
             case 1 -> listarProdutos();
             case 2 -> cadastrarProduto();
+            case 3 -> listarClientes();
+            case 4 -> cadastrarCliente();
+            case 5 -> buscarCliente();
             case 0 -> System.out.println("Encerrando o atendimento.");
             default -> System.out.println("Opção inválida, tente de novo.");
         }
@@ -54,6 +60,25 @@ public class Main {
         System.out.println("Produto cadastrado: " + produto);
     }
 
+    private static void listarClientes() {
+        System.out.println("Clientes:");
+        for (Cliente cliente : loja.getClientes()) {
+            System.out.println(cliente);
+        }
+    }
+
+    private static void cadastrarCliente() {
+        int codigo = lerInteiro("Código: ");
+        String nome = lerTexto("Nome: ");
+        String email = lerTexto("E-mail: ");
+        Cliente cliente = loja.cadastrarCliente(codigo, nome, email);
+        System.out.println("Cliente cadastrado: " + cliente);
+    }
+
+    private static void buscarCliente() {
+        Cliente cliente = loja.localizarCliente(lerInteiro("Código do cliente: "));
+        System.out.println(cliente);
+    }
     private static int lerInteiro(String mensagem) {
         System.out.print(mensagem);
         return Integer.parseInt(leitor.nextLine().trim());
