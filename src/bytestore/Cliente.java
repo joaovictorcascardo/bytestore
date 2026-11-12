@@ -47,6 +47,12 @@ public class Cliente {
     public void adicionarCredito(double valor) {
         credito = Dinheiro.arredondar(credito + valor);
     }
+    public void usarCredito(double valor) {
+        if (valor > credito + 0.001) {
+            throw new IllegalStateException("crédito insuficiente.");
+        }
+        credito = Dinheiro.arredondar(credito - valor);
+    }
     @Override
     public String toString() {
         return String.format("%d - %s (%s) | %s | crédito: %s", codigo, nome, email,

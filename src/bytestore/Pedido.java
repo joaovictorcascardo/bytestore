@@ -107,14 +107,24 @@ public class Pedido {
         status = StatusPedido.CONFIRMADO;
     }
 
-    public void pagar(double valor) {
+    public double calcularCreditoUsado(boolean usarCredito) {
+        if (!usarCredito) {
+            return 0;
+        }
+        return Dinheiro.arredondar(Math.min(cliente.getCredito(), getTotalAPagar()));
+    }
+
+    public void pagar(boolean usarCredito, double valorDinheiro) {
         if (status != StatusPedido.CONFIRMADO) {
             throw new IllegalStateException("só pedido CONFIRMADO pode ser pago. O pedido " + id + " está " + status + ".");
         }
-        if (!Dinheiro.iguais(valor, getTotalAPagar())) {
-            throw new IllegalArgumentException("o valor precisa ser exatamente " + Dinheiro.formatar(getTotalAPagar()) + ".");
+        double credito = calcularCreditoUsado(usarCredito);
+        double restante = Dinheiro.arredondar(getTotalAPagar() - credito);
+        if (!Dinheiro.iguais(valorDinheiro, restante)) {
+            throw new IllegalArgumentException("o valor em dinheiro precisa ser exatamente " + Dinheiro.formatar(restante) + ".");
         }
-        pagamento = new Pagamento(valor);
+        cliente.usarCredito(credito);
+        pagamento = new Pagamento(credito, valorDinheiro);
         status = StatusPedido.PAGO;
     }
 

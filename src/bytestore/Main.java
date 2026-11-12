@@ -163,10 +163,19 @@ public class Main {
     private static void pagarPedido() {
         int idPedido = lerInteiro("Número do pedido: ");
         Pedido pedido = loja.buscarPedido(idPedido);
+        Cliente cliente = pedido.getCliente();
         System.out.println("Total a pagar: " + Dinheiro.formatar(pedido.getTotalAPagar()));
-        double valor = lerValor("Valor recebido: ");
-        loja.pagarPedido(idPedido, valor);
-        System.out.println("Pagamento registrado.");
+        boolean usarCredito = false;
+        if (cliente.getCredito() > 0) {
+            System.out.println("Crédito disponível de " + cliente.getNome() + ": " + Dinheiro.formatar(cliente.getCredito()));
+            usarCredito = lerTexto("Usar crédito? (s/n): ").trim().equalsIgnoreCase("s");
+        }
+        double restante = Dinheiro.arredondar(pedido.getTotalAPagar() - pedido.calcularCreditoUsado(usarCredito));
+        System.out.println("Valor a receber em dinheiro: " + Dinheiro.formatar(restante));
+        double valor = lerValor("Valor em dinheiro: ");
+        loja.pagarPedido(idPedido, usarCredito, valor);
+        System.out.println("Pagamento registrado. Saldo de crédito de " + cliente.getNome() + ": "
+                + Dinheiro.formatar(cliente.getCredito()));
         exibirPedido(pedido);
     }
     private static void historicoDoCliente() {
@@ -211,8 +220,10 @@ public class Main {
                     + " | motivo: " + pedido.getMotivoCancelamento());
         }
         if (pedido.getPagamento() != null) {
-            System.out.println("Pago em: " + DataHora.formatar(pedido.getPagamento().getPagoEm())
-                    + " | valor: " + Dinheiro.formatar(pedido.getPagamento().getValor()));
+            Pagamento pagamento = pedido.getPagamento();
+            System.out.println("Pago em: " + DataHora.formatar(pagamento.getPagoEm()) + " | total: "
+                    + Dinheiro.formatar(pagamento.getValorTotal()) + " (crédito " + Dinheiro.formatar(pagamento.getValorCredito())
+                    + " + dinheiro " + Dinheiro.formatar(pagamento.getValorDinheiro()) + ")");
         }
         if (pedido.getItens().isEmpty()) {
             System.out.println("  (sem itens)");

@@ -104,8 +104,8 @@ public class Loja {
     public void confirmarPedido(int idPedido) {
         buscarPedido(idPedido).confirmar();
     }
-    public void pagarPedido(int idPedido, double valor) {
-        buscarPedido(idPedido).pagar(valor);
+    public void pagarPedido(int idPedido, boolean usarCredito, double valorDinheiro) {
+        buscarPedido(idPedido).pagar(usarCredito, valorDinheiro);
     }
     public LinkedList<Pedido> historicoDoCliente(int codigoCliente) {
         Cliente cliente = localizarCliente(codigoCliente);
