@@ -143,6 +143,15 @@ public class Loja {
         Cliente cliente = codigoCliente == 0 ? null : localizarCliente(codigoCliente);
         return new Relatorio(pedidos, devolucoes, inicio, fim, cliente);
     }
+    public int contarPedidos(StatusPedido status) {
+        int total = 0;
+        for (Pedido pedido : pedidos) {
+            if (pedido.getStatus() == status) {
+                total++;
+            }
+        }
+        return total;
+    }
     public LinkedList<Produto> getProdutos() {
         return produtos;
     }

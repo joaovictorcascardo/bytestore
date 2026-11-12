@@ -13,7 +13,7 @@ public class Main {
         int opcao;
         do {
             exibirMenu();
-            opcao = lerInteiro("Opção: ");
+            opcao = lerOpcao();
             try {
                 executar(opcao);
             } catch (IllegalArgumentException | IllegalStateException e) {
@@ -25,29 +25,34 @@ public class Main {
 
     private static void exibirMenu() {
         System.out.println();
-        System.out.println("========== ByteStore ==========");
-        System.out.println("1 - Listar produtos");
-        System.out.println("2 - Cadastrar produto");
-        System.out.println("3 - Listar clientes");
-        System.out.println("4 - Cadastrar cliente");
-        System.out.println("5 - Buscar cliente");
-        System.out.println("6 - Repor estoque");
-        System.out.println("7 - Alterar preço");
-        System.out.println("8 - Consultar disponibilidade");
-        System.out.println("9 - Abrir pedido");
-        System.out.println("10 - Ver pedido");
-        System.out.println("11 - Adicionar produto ao pedido");
-        System.out.println("12 - Remover produto do pedido");
-        System.out.println("13 - Aplicar desconto");
-        System.out.println("14 - Confirmar pedido");
-        System.out.println("15 - Pagar pedido");
-        System.out.println("16 - Histórico do cliente");
-        System.out.println("17 - Cancelar pedido");
-        System.out.println("18 - Registrar devolução");
-        System.out.println("19 - Trocar produto");
-        System.out.println("20 - Ver trocas");
-        System.out.println("21 - Relatório por período");
-        System.out.println("0 - Sair");
+        System.out.println("============ ByteStore ============");
+        System.out.println("Produtos");
+        System.out.println("  1 - Listar produtos");
+        System.out.println("  2 - Cadastrar produto");
+        System.out.println("  6 - Repor estoque");
+        System.out.println("  7 - Alterar preço");
+        System.out.println("  8 - Consultar disponibilidade");
+        System.out.println("Clientes");
+        System.out.println("  3 - Listar clientes");
+        System.out.println("  4 - Cadastrar cliente");
+        System.out.println("  5 - Buscar cliente");
+        System.out.println("  16 - Histórico do cliente");
+        System.out.println("Pedidos");
+        System.out.println("  9 - Abrir pedido");
+        System.out.println("  10 - Ver pedido");
+        System.out.println("  11 - Adicionar produto ao pedido");
+        System.out.println("  12 - Remover produto do pedido");
+        System.out.println("  13 - Aplicar desconto");
+        System.out.println("  14 - Confirmar pedido");
+        System.out.println("  15 - Pagar pedido");
+        System.out.println("  17 - Cancelar pedido");
+        System.out.println("Pós-venda");
+        System.out.println("  18 - Registrar devolução");
+        System.out.println("  19 - Trocar produto");
+        System.out.println("  20 - Ver trocas");
+        System.out.println("Gestão");
+        System.out.println("  21 - Relatório por período");
+        System.out.println("0 - Encerrar atendimento");
     }
 
     private static void executar(int opcao) {
@@ -73,7 +78,7 @@ public class Main {
             case 19 -> trocarProduto();
             case 20 -> listarTrocas();
             case 21 -> relatorioPorPeriodo();
-            case 0 -> System.out.println("Encerrando o atendimento.");
+            case 0 -> exibirResumoFinal();
             default -> System.out.println("Opção inválida, tente de novo.");
         }
     }
@@ -280,6 +285,25 @@ public class Main {
         System.out.println("Devoluções: " + Dinheiro.formatar(relatorio.getTotalDevolvido()));
         System.out.println("Resultado comercial: " + Dinheiro.formatar(relatorio.getResultadoComercial()));
     }
+    private static void exibirResumoFinal() {
+        System.out.println();
+        System.out.println("========== Resumo do atendimento ==========");
+        System.out.println("Estoque:");
+        for (Produto produto : loja.getProdutos()) {
+            System.out.println("  " + produto.getNome() + ": " + produto.getEstoque());
+        }
+        System.out.println("Crédito dos clientes:");
+        for (Cliente cliente : loja.getClientes()) {
+            System.out.println("  " + cliente.getNome() + ": " + Dinheiro.formatar(cliente.getCredito()));
+        }
+        System.out.println("Pedidos por situação:");
+        for (StatusPedido status : StatusPedido.values()) {
+            System.out.println("  " + status + ": " + loja.contarPedidos(status));
+        }
+        exibirRelatorio(loja.gerarRelatorio(null, null, 0));
+        System.out.println("Atendimento encerrado.");
+    }
+
     private static void exibirPedido(Pedido pedido) {
         System.out.println("Pedido " + pedido.getId() + " | cliente: " + pedido.getCliente().getNome()
                 + " | " + pedido.getStatus());
@@ -312,6 +336,14 @@ public class Main {
         System.out.println("Desconto: " + pedido.getDesconto() + "% | economia: " + Dinheiro.formatar(pedido.getEconomia()));
         System.out.println("Total a pagar: " + Dinheiro.formatar(pedido.getTotalAPagar()));
     }
+    private static int lerOpcao() {
+        try {
+            return lerInteiro("Opção: ");
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
     private static int lerInteiro(String mensagem) {
         System.out.print(mensagem);
         return Integer.parseInt(leitor.nextLine().trim());
